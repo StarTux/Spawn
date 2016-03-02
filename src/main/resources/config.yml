@@ -1,0 +1,3 @@
+TeleportOnJoin: false
+Message: '&bTeleported to spawn.'
+ParticleEffects: false

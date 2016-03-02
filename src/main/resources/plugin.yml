@@ -1,0 +1,23 @@
+name: Spawn
+description: Bring players to spawn
+author: StarTux
+version: 0.2
+main: com.winthier.spawn.SpawnPlugin
+commands:
+  Spawn:
+    description: Teleport to spawn.
+    permission: spawn.spawn
+    usage: /<command> [player...]
+  SetSpawn:
+    description: Set the spawn location.
+    permission: spawn.setspawn
+permissions:
+  spawn.setspawn:
+    description: Set the spawn location.
+    default: op
+  spawn.spawn:
+    description: Teleport to spawn.
+    default: true
+  spawn.other:
+    description: Teleport other players to spawn.
+    default: op

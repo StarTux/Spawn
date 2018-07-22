@@ -4,7 +4,6 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 import org.bukkit.ChatColor;
-import org.bukkit.Effect;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.command.Command;
@@ -12,18 +11,14 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
-import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.scheduler.BukkitRunnable;
-import org.bukkit.util.Vector;
 import org.spigotmc.event.player.PlayerSpawnLocationEvent;
 
-public class SpawnPlugin extends JavaPlugin implements Listener {
+public final class SpawnPlugin extends JavaPlugin implements Listener {
     private Location spawnLocation;
     private boolean teleportOnJoin;
     private String message;
@@ -91,7 +86,7 @@ public class SpawnPlugin extends JavaPlugin implements Listener {
     }
 
     @Override
-    public boolean onCommand(CommandSender sender, Command command, String label, String args[]) {
+    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         Player player = null;
         if (sender instanceof Player) player = (Player)sender;
         if (label.equalsIgnoreCase("spawn")) {
@@ -135,11 +130,10 @@ public class SpawnPlugin extends JavaPlugin implements Listener {
                 sender.sendMessage("" + ChatColor.RED + "Player expected");
                 return true;
             }
-            Location spawnLocation = getSpawnLocation();
-            if (particleEffects) spawnLocation.getWorld().spigot().playEffect(spawnLocation.clone().add(0.0, 0.5, 0.0), Effect.PORTAL, 0, 0, 0.2f, 0.5f, 0.2f, 0.1f, 256, 32);
+            //if (particleEffects) spawnLocation.getWorld().spigot().playEffect(spawnLocation.clone().add(0.0, 0.5, 0.0), Effect.PORTAL, 0, 0, 0.2f, 0.5f, 0.2f, 0.1f, 256, 32);
             player.eject();
             player.teleport(getSpawnLocation(), TeleportCause.COMMAND);
-            if (particleEffects) player.getLocation().getWorld().spigot().playEffect(player.getLocation().add(0.0, 0.5, 0.0), Effect.SMOKE, 0, 0, 0.2f, 0.5f, 0.2f, 0.001f, 256, 32);
+            //if (particleEffects) player.getLocation().getWorld().spigot().playEffect(player.getLocation().add(0.0, 0.5, 0.0), Effect.SMOKE, 0, 0, 0.2f, 0.5f, 0.2f, 0.001f, 256, 32);
             player.sendMessage(message);
             getLogger().info("Teleported " + player.getName() + " to spawn.");
             String cc;

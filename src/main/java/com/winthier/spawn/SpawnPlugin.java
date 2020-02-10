@@ -1,6 +1,5 @@
 package com.winthier.spawn;
 
-import com.destroystokyo.paper.event.player.PlayerInitialSpawnEvent;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
@@ -169,17 +168,15 @@ public final class SpawnPlugin extends JavaPlugin implements Listener {
     }
 
     @EventHandler
-    public void onPlayerInitialSpawn(PlayerInitialSpawnEvent event) {
-        spawnLocatedPlayers.add(event.getPlayer().getUniqueId());
-        event.setSpawnLocation(getSpawnLocation());
-        getLogger().info("Setting spawn location of " + event.getPlayer().getName()
-                         + " due to PlayerInitialSpawnEvent");
-        return;
-    }
-
-    @EventHandler
     public void onPlayerSpawnLocation(PlayerSpawnLocationEvent event) {
         Player player = event.getPlayer();
+        if (!player.hasPlayedBefore()) {
+            spawnLocatedPlayers.add(event.getPlayer().getUniqueId());
+            event.setSpawnLocation(getSpawnLocation());
+            getLogger().info("Setting spawn location of " + event.getPlayer().getName()
+                             + " due to PlayerInitialSpawnEvent");
+            return;
+        }
         if (teleportOnJoin) {
             spawnLocatedPlayers.add(player.getUniqueId());
             event.setSpawnLocation(getSpawnLocation());
@@ -203,8 +200,8 @@ public final class SpawnPlugin extends JavaPlugin implements Listener {
 
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
-        if (!spawnLocatedPlayers.remove(event.getPlayer().getUniqueId())) return;
         Player player = event.getPlayer();
+        if (!spawnLocatedPlayers.remove(player.getUniqueId())) return;
         if (player.isOp()) return;
         GameMode defaultGameMode = getServer().getDefaultGameMode();
         GameMode playerGameMode = player.getGameMode();

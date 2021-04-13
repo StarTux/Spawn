@@ -75,7 +75,7 @@ public final class SpawnPlugin extends JavaPlugin implements Listener {
                 spawnLocation = getServer().getWorlds().get(0).getSpawnLocation();
             }
         }
-        return spawnLocation;
+        return spawnLocation.clone();
     }
 
     public void setSpawnLocation(Location location) {

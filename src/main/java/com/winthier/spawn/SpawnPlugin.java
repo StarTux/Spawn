@@ -23,6 +23,7 @@ public final class SpawnPlugin extends JavaPlugin implements Listener {
     private Location spawnLocation;
     private boolean teleportOnJoin;
     private boolean omitDefaultWorld;
+    private boolean initialSpawn;
     private String message;
     private final Set<UUID> spawnLocatedPlayers = new HashSet<>();
 
@@ -33,6 +34,7 @@ public final class SpawnPlugin extends JavaPlugin implements Listener {
         getServer().getPluginManager().registerEvents(this, this);
         teleportOnJoin = getConfig().getBoolean("TeleportOnJoin");
         omitDefaultWorld = getConfig().getBoolean("OmitDefaultWorld");
+        initialSpawn = getConfig().getBoolean("InitialSpawn");
         message = ChatColor.translateAlternateColorCodes('&', getConfig().getString("Message"));
         getConfig().options().copyDefaults(true);
     }
@@ -131,7 +133,6 @@ public final class SpawnPlugin extends JavaPlugin implements Listener {
                 }
                 return true;
             }
-
             // No argument means teleport the caller.
             if (player == null) {
                 sender.sendMessage("" + ChatColor.RED + "Player expected");
@@ -170,18 +171,18 @@ public final class SpawnPlugin extends JavaPlugin implements Listener {
     @EventHandler
     public void onPlayerSpawnLocation(PlayerSpawnLocationEvent event) {
         Player player = event.getPlayer();
-        if (!player.hasPlayedBefore()) {
-            spawnLocatedPlayers.add(event.getPlayer().getUniqueId());
-            event.setSpawnLocation(getSpawnLocation());
-            getLogger().info("Setting spawn location of " + event.getPlayer().getName()
-                             + " due to PlayerInitialSpawnEvent");
-            return;
-        }
         if (teleportOnJoin) {
             spawnLocatedPlayers.add(player.getUniqueId());
             event.setSpawnLocation(getSpawnLocation());
             getLogger().info("Setting spawn location of " + player.getName()
                              + " due to teleportOnJoin");
+            return;
+        }
+        if (!player.hasPlayedBefore() && initialSpawn) {
+            spawnLocatedPlayers.add(event.getPlayer().getUniqueId());
+            event.setSpawnLocation(getSpawnLocation());
+            getLogger().info("Setting spawn location of " + event.getPlayer().getName()
+                             + " due to PlayerInitialSpawnEvent");
             return;
         }
         if (omitDefaultWorld) {

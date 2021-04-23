@@ -1,3 +1,4 @@
 TeleportOnJoin: false
 OmitDefaultWorld: true
+InitialSpawn: true
 Message: '&bTeleported to spawn.'

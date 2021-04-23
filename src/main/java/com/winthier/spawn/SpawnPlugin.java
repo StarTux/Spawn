@@ -3,6 +3,7 @@ package com.winthier.spawn;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
+import java.util.concurrent.ThreadLocalRandom;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
@@ -24,6 +25,7 @@ public final class SpawnPlugin extends JavaPlugin implements Listener {
     private boolean teleportOnJoin;
     private boolean omitDefaultWorld;
     private boolean initialSpawn;
+    private int spawnRadius;
     private String message;
     private final Set<UUID> spawnLocatedPlayers = new HashSet<>();
 
@@ -35,6 +37,7 @@ public final class SpawnPlugin extends JavaPlugin implements Listener {
         teleportOnJoin = getConfig().getBoolean("TeleportOnJoin");
         omitDefaultWorld = getConfig().getBoolean("OmitDefaultWorld");
         initialSpawn = getConfig().getBoolean("InitialSpawn");
+        spawnRadius = getConfig().getInt("SpawnRadius");
         message = ChatColor.translateAlternateColorCodes('&', getConfig().getString("Message"));
         getConfig().options().copyDefaults(true);
     }
@@ -76,6 +79,13 @@ public final class SpawnPlugin extends JavaPlugin implements Listener {
             if (spawnLocation == null) {
                 spawnLocation = getServer().getWorlds().get(0).getSpawnLocation();
             }
+        }
+        if (spawnRadius > 0) {
+            double radius = ThreadLocalRandom.current().nextDouble() * (double) spawnRadius;
+            double angle = ThreadLocalRandom.current().nextDouble() * Math.PI * 2.0;
+            double dx = Math.cos(angle) * radius;
+            double dz = Math.sin(angle) * radius;
+            return spawnLocation.clone().add(dx, 0, dz).toHighestLocation();
         }
         return spawnLocation.clone();
     }

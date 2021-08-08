@@ -3,7 +3,7 @@ name: Spawn
 description: Bring players to spawn
 author: StarTux
 version: 0.1
-api-version: 1.13
+api-version: 1.17
 website: https://github.com/StarTux/Spawn
 
 commands:

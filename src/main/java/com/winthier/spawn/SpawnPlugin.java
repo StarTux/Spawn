@@ -85,7 +85,7 @@ public final class SpawnPlugin extends JavaPlugin implements Listener {
             double angle = ThreadLocalRandom.current().nextDouble() * Math.PI * 2.0;
             double dx = Math.cos(angle) * radius;
             double dz = Math.sin(angle) * radius;
-            return spawnLocation.clone().add(dx, 0, dz).toHighestLocation().add(0, 1, 0);
+            return spawnLocation.clone().add(dx, 0, dz);
         }
         return spawnLocation.clone();
     }

@@ -1,55 +1,55 @@
 package com.winthier.spawn;
 
-import java.util.HashSet;
-import java.util.Set;
-import java.util.UUID;
+import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 import org.bukkit.ChatColor;
-import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.World;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
-import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.event.player.PlayerRespawnEvent;
-import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.spigotmc.event.player.PlayerSpawnLocationEvent;
 
-public final class SpawnPlugin extends JavaPlugin implements Listener {
+public final class SpawnPlugin extends JavaPlugin {
     private Location spawnLocation;
-    private boolean teleportOnJoin;
-    private boolean omitDefaultWorld;
-    private boolean initialSpawn;
     private int spawnRadius;
-    private String message;
-    private final Set<UUID> spawnLocatedPlayers = new HashSet<>();
+    protected boolean teleportOnJoin;
+    protected boolean omitDefaultWorld;
+    protected boolean initialSpawn;
+    protected String message;
+    protected Random random;
 
     @Override
     public void onEnable() {
+        random = ThreadLocalRandom.current();
+        getCommand("spawn").setExecutor(new SpawnCommand(this));
+        getCommand("setspawn").setExecutor(new SetSpawnCommand(this));
+        getServer().getPluginManager().registerEvents(new EventListener(this), this);
+        loadConfiguration();
+    }
+
+    public void loadConfiguration() {
         saveDefaultConfig();
         reloadConfig();
-        getServer().getPluginManager().registerEvents(this, this);
         teleportOnJoin = getConfig().getBoolean("TeleportOnJoin");
         omitDefaultWorld = getConfig().getBoolean("OmitDefaultWorld");
         initialSpawn = getConfig().getBoolean("InitialSpawn");
         spawnRadius = getConfig().getInt("SpawnRadius");
         message = ChatColor.translateAlternateColorCodes('&', getConfig().getString("Message"));
-        getConfig().options().copyDefaults(true);
+        loadSpawnLocation();
     }
 
     private void loadSpawnLocation() {
         spawnLocation = null;
         ConfigurationSection config = getConfig().getConfigurationSection("spawn");
-        if (config == null) return;
+        if (config == null) {
+            getLogger().warning("Spawn not set. Using default instead.");
+            spawnLocation = getServer().getWorlds().get(0).getSpawnLocation();
+            return;
+        }
         String worldName = config.getString("World");
         World world = getServer().getWorld(worldName);
         if (world == null) {
             getLogger().warning("Spawn world " + worldName + " not found. Using default instead.");
+            spawnLocation = getServer().getWorlds().get(0).getSpawnLocation();
             return;
         }
         double x = config.getDouble("X");
@@ -74,15 +74,9 @@ public final class SpawnPlugin extends JavaPlugin implements Listener {
     }
 
     public Location getSpawnLocation() {
-        if (spawnLocation == null) {
-            loadSpawnLocation();
-            if (spawnLocation == null) {
-                spawnLocation = getServer().getWorlds().get(0).getSpawnLocation();
-            }
-        }
         if (spawnRadius > 0) {
-            double radius = ThreadLocalRandom.current().nextDouble() * (double) spawnRadius;
-            double angle = ThreadLocalRandom.current().nextDouble() * Math.PI * 2.0;
+            double radius = random.nextDouble() * (double) spawnRadius;
+            double angle = random.nextDouble() * Math.PI * 2.0;
             double dx = Math.cos(angle) * radius;
             double dz = Math.sin(angle) * radius;
             return spawnLocation.clone().add(dx, 0, dz);
@@ -98,128 +92,5 @@ public final class SpawnPlugin extends JavaPlugin implements Listener {
         }
         spawnLocation = location;
         saveSpawnLocation();
-    }
-
-    @Override
-    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        Player player = null;
-        if (sender instanceof Player) player = (Player) sender;
-        if (label.equalsIgnoreCase("spawn")) {
-            // If there are arguments, attempt to copy named players to spawn.
-            if (args.length > 0) {
-                // Check permission.
-                if (!sender.hasPermission("spawn.other")) {
-                    sender.sendMessage("" + ChatColor.RED + "You don't have permission.");
-                    return true;
-                }
-                // Find and teleport.
-                for (String arg : args) {
-                    if ("*".equals(arg)) {
-                        int count = 0;
-                        for (Player other: getServer().getOnlinePlayers()) {
-                            if (!other.equals(player)) {
-                                other.teleport(getSpawnLocation(), TeleportCause.COMMAND);
-                                sender.sendMessage("" + ChatColor.YELLOW + "Teleported "
-                                                   + other.getName() + " to spawn.");
-                                other.sendMessage(message);
-                                count += 1;
-                            }
-                        }
-                    } else {
-                        Player other = getServer().getPlayer(arg);
-                        if (other == null) {
-                            sender.sendMessage("" + ChatColor.RED
-                                               + "Player not found: " + arg + ".");
-                        } else {
-                            other.eject();
-                            other.teleport(getSpawnLocation(), TeleportCause.COMMAND);
-                            sender.sendMessage("" + ChatColor.YELLOW + "Teleported "
-                                               + other.getName() + " to spawn.");
-                            other.sendMessage(message);
-                            getLogger().info(sender.getName() + " teleported "
-                                             + other.getName() + " to spawn.");
-                        }
-                    }
-                }
-                return true;
-            }
-            // No argument means teleport the caller.
-            if (player == null) {
-                sender.sendMessage("" + ChatColor.RED + "Player expected");
-                return true;
-            }
-            player.eject();
-            player.teleport(getSpawnLocation(), TeleportCause.COMMAND);
-            player.sendMessage(message);
-            getLogger().info("Teleported " + player.getName() + " to spawn.");
-            String cc;
-            CommandSender console = getServer().getConsoleSender();
-            player.sendTitle("", ChatColor.GREEN + "Welcome to Spawn");
-            return true;
-        } else if (label.equalsIgnoreCase("setspawn")) {
-            if (player == null) {
-                sender.sendMessage("" + ChatColor.RED + "Player expected");
-                return true;
-            }
-            final Location loc = player.getLocation();
-            setSpawnLocation(loc);
-            player.sendMessage(ChatColor.YELLOW + "Spawn location set to "
-                               + loc.getBlockX() + " "
-                               + loc.getBlockY() + " "
-                               + loc.getBlockZ());
-            return true;
-        }
-        return false;
-    }
-
-    @EventHandler
-    public void onPlayerRespawn(PlayerRespawnEvent event) {
-        if (event.isBedSpawn()) return;
-        event.setRespawnLocation(getSpawnLocation());
-    }
-
-    @EventHandler
-    public void onPlayerSpawnLocation(PlayerSpawnLocationEvent event) {
-        Player player = event.getPlayer();
-        if (teleportOnJoin) {
-            spawnLocatedPlayers.add(player.getUniqueId());
-            event.setSpawnLocation(getSpawnLocation());
-            getLogger().info("Setting spawn location of " + player.getName()
-                             + " due to teleportOnJoin");
-            return;
-        }
-        if (!player.hasPlayedBefore() && initialSpawn) {
-            spawnLocatedPlayers.add(event.getPlayer().getUniqueId());
-            event.setSpawnLocation(getSpawnLocation());
-            getLogger().info("Setting spawn location of " + event.getPlayer().getName()
-                             + " due to PlayerInitialSpawnEvent");
-            return;
-        }
-        if (omitDefaultWorld) {
-            World defaultWorld = getServer().getWorlds().get(0);
-            World playerWorld = event.getSpawnLocation().getWorld();
-            if (playerWorld.equals(defaultWorld)) {
-                spawnLocatedPlayers.add(event.getPlayer().getUniqueId());
-                event.setSpawnLocation(getSpawnLocation());
-                getLogger().info("Setting spawn location of " + player.getName()
-                                 + " due to omitDefaultWorld: "
-                                 + playerWorld.getName());
-                return;
-            }
-        }
-    }
-
-    @EventHandler
-    public void onPlayerJoin(PlayerJoinEvent event) {
-        Player player = event.getPlayer();
-        if (!spawnLocatedPlayers.remove(player.getUniqueId())) return;
-        if (player.isOp()) return;
-        GameMode defaultGameMode = getServer().getDefaultGameMode();
-        GameMode playerGameMode = player.getGameMode();
-        if (playerGameMode != defaultGameMode) {
-            player.setGameMode(defaultGameMode);
-            getLogger().info("Setting game mode of " + player.getName()
-                             + ": " + playerGameMode + " => " + defaultGameMode);
-        }
     }
 }

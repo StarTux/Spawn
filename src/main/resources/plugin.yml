@@ -6,6 +6,9 @@ version: 0.1
 api-version: 1.17
 website: https://github.com/StarTux/Spawn
 
+depend: [Core]
+softdepend: []
+
 commands:
   Spawn:
     description: Teleport to spawn.

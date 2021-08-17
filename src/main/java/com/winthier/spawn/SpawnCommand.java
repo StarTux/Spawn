@@ -1,5 +1,6 @@
 package com.winthier.spawn;
 
+import com.cavetale.core.event.player.PluginPlayerEvent.Detail;
 import com.cavetale.core.event.player.PluginPlayerEvent;
 import java.util.Collections;
 import java.util.List;
@@ -63,9 +64,10 @@ public final class SpawnCommand implements TabExecutor {
             player.leaveVehicle();
         }
         Location location = plugin.getSpawnLocation();
-        if (!PluginPlayerEvent.Name.USE_SPAWN.cancellable(plugin, player).detail("location", location).call()) {
-            return true;
-        }
+        boolean allowed = PluginPlayerEvent.Name.USE_SPAWN.cancellable(plugin, player)
+            .detail(Detail.LOCATION, location)
+            .call();
+        if (!allowed) return true;
         player.teleport(location, TeleportCause.COMMAND);
         player.sendMessage(plugin.message);
         plugin.getLogger().info("Teleported " + player.getName() + " to spawn.");

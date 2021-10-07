@@ -5,6 +5,9 @@ import com.cavetale.core.event.player.PluginPlayerEvent;
 import java.util.Collections;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.title.Title;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -71,7 +74,8 @@ public final class SpawnCommand implements TabExecutor {
         player.teleport(location, TeleportCause.COMMAND);
         player.sendMessage(plugin.message);
         plugin.getLogger().info("Teleported " + player.getName() + " to spawn.");
-        player.sendTitle("", ChatColor.GREEN + "Welcome to Spawn");
+        player.showTitle(Title.title(Component.empty(),
+                                     Component.text("Welcome to Spawn", NamedTextColor.GREEN)));
         return true;
     }
 

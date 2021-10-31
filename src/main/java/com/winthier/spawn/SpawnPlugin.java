@@ -9,6 +9,7 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public final class SpawnPlugin extends JavaPlugin {
+    protected static SpawnPlugin instance;
     private Location spawnLocation;
     private int spawnRadius;
     protected boolean teleportOnJoin;
@@ -19,6 +20,7 @@ public final class SpawnPlugin extends JavaPlugin {
 
     @Override
     public void onEnable() {
+        instance = this;
         random = ThreadLocalRandom.current();
         getCommand("spawn").setExecutor(new SpawnCommand(this));
         getCommand("setspawn").setExecutor(new SetSpawnCommand(this));

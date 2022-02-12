@@ -9,6 +9,7 @@ import org.bukkit.GameMode;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
@@ -25,7 +26,7 @@ public final class EventListener implements Listener {
         event.setRespawnLocation(plugin.getSpawnLocation());
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.LOW)
     public void onPlayerSpawnLocation(PlayerSpawnLocationEvent event) {
         Player player = event.getPlayer();
         if (plugin.teleportOnJoin) {

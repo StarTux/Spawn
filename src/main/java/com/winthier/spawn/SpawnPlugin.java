@@ -2,7 +2,6 @@ package com.winthier.spawn;
 
 import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
-import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.configuration.ConfigurationSection;
@@ -15,14 +14,14 @@ public final class SpawnPlugin extends JavaPlugin {
     protected boolean teleportOnJoin;
     protected boolean omitDefaultWorld;
     protected boolean initialSpawn;
-    protected String message;
     protected Random random;
+    protected String remote;
 
     @Override
     public void onEnable() {
         instance = this;
         random = ThreadLocalRandom.current();
-        getCommand("spawn").setExecutor(new SpawnCommand(this));
+        new SpawnCommand(this).enable();
         getCommand("setspawn").setExecutor(new SetSpawnCommand(this));
         getServer().getPluginManager().registerEvents(new EventListener(this), this);
         loadConfiguration();
@@ -35,8 +34,8 @@ public final class SpawnPlugin extends JavaPlugin {
         omitDefaultWorld = getConfig().getBoolean("OmitDefaultWorld");
         initialSpawn = getConfig().getBoolean("InitialSpawn");
         spawnRadius = getConfig().getInt("SpawnRadius");
-        message = ChatColor.translateAlternateColorCodes('&', getConfig().getString("Message"));
         loadSpawnLocation();
+        remote = getConfig().getString("Remote");
     }
 
     private void loadSpawnLocation() {

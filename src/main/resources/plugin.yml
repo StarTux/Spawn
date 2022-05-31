@@ -1,30 +1,36 @@
 main: com.winthier.spawn.SpawnPlugin
 name: Spawn
+version: 0.1
+api-version: 1.18
+
 description: Bring players to spawn
 author: StarTux
-version: 0.1
-api-version: 1.17
 website: https://github.com/StarTux/Spawn
 
 depend: [Core]
 softdepend: []
 
 commands:
-  Spawn:
-    description: Teleport to spawn.
+
+  spawn:
+    description: Teleport to spawn
     permission: spawn.spawn
-    usage: /<command> [player...]
-  SetSpawn:
+    usage: /spawn
+
+  setspawn:
     description: Set the spawn location.
     permission: spawn.setspawn
 
 permissions:
+
   spawn.setspawn:
     description: Set the spawn location.
     default: op
+
   spawn.spawn:
     description: Teleport to spawn.
     default: op
+
   spawn.other:
     description: Teleport other players to spawn.
     default: op

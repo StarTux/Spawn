@@ -2,4 +2,4 @@ TeleportOnJoin: false
 OmitDefaultWorld: true
 InitialSpawn: true
 SpawnRadius: 0
-Message: '&bTeleported to spawn.'
+Remote: ''

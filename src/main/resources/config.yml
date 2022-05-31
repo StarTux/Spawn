@@ -1,5 +1,5 @@
 TeleportOnJoin: false
-OmitDefaultWorld: true
+OmitDefaultWorld: false
 InitialSpawn: true
 SpawnRadius: 0
 Remote: ''

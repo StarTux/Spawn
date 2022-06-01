@@ -1,5 +1,6 @@
 package com.winthier.spawn;
 
+import com.cavetale.core.bungee.Bungee;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
@@ -22,8 +23,18 @@ public final class EventListener implements Listener {
 
     @EventHandler
     public void onPlayerRespawn(PlayerRespawnEvent event) {
-        if (event.isBedSpawn()) return;
+        for (var flag : event.getRespawnFlags()) {
+            switch (flag) {
+            case ANCHOR_SPAWN:
+            case BED_SPAWN:
+                return;
+            default: break;
+            }
+        }
         event.setRespawnLocation(plugin.getSpawnLocation());
+        if (plugin.remote != null && !plugin.remote.isEmpty()) {
+            Bungee.send(event.getPlayer(), plugin.remote);
+        }
     }
 
     @EventHandler(priority = EventPriority.LOW)

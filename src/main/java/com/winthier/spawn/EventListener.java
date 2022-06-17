@@ -56,7 +56,7 @@ public final class EventListener implements Listener {
         }
         if (plugin.omitDefaultWorld) {
             World defaultWorld = Bukkit.getWorlds().get(0);
-            World playerWorld = plugin.getSpawnLocation().getWorld();
+            World playerWorld = event.getSpawnLocation().getWorld();
             if (playerWorld.equals(defaultWorld)) {
                 spawnLocatedPlayers.add(event.getPlayer().getUniqueId());
                 event.setSpawnLocation(plugin.getSpawnLocation());

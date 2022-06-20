@@ -80,7 +80,9 @@ public final class SpawnPlugin extends JavaPlugin {
             double angle = random.nextDouble() * Math.PI * 2.0;
             double dx = Math.cos(angle) * radius;
             double dz = Math.sin(angle) * radius;
-            return spawnLocation.clone().add(dx, 0, dz);
+            Location result = spawnLocation.clone().add(dx, 0, dz);
+            result.setYaw((float) random.nextDouble() * 360f);
+            return result;
         }
         return spawnLocation.clone();
     }

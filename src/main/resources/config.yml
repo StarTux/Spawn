@@ -1,3 +1,4 @@
+OnVoidDamage: false
 TeleportOnJoin: false
 OmitDefaultWorld: false
 InitialSpawn: true

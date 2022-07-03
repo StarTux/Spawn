@@ -12,8 +12,10 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
+import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 import org.spigotmc.event.player.PlayerSpawnLocationEvent;
 
 @RequiredArgsConstructor
@@ -80,5 +82,13 @@ public final class EventListener implements Listener {
             plugin.getLogger().info("Setting game mode of " + player.getName()
                                     + ": " + playerGameMode + " => " + defaultGameMode);
         }
+    }
+
+    @EventHandler
+    private void onEntityVoidDamage(EntityDamageEvent event) {
+        if (!plugin.onVoidDamage) return;
+        if (event.getCause() != EntityDamageEvent.DamageCause.VOID) return;
+        if (!(event.getEntity() instanceof Player player)) return;
+        player.teleport(plugin.getSpawnLocation(), TeleportCause.PLUGIN);
     }
 }

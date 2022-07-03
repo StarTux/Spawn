@@ -14,6 +14,7 @@ public final class SpawnPlugin extends JavaPlugin {
     protected boolean teleportOnJoin;
     protected boolean omitDefaultWorld;
     protected boolean initialSpawn;
+    protected boolean onVoidDamage;
     protected Random random;
     protected String remote;
 
@@ -36,6 +37,7 @@ public final class SpawnPlugin extends JavaPlugin {
         spawnRadius = getConfig().getInt("SpawnRadius");
         loadSpawnLocation();
         remote = getConfig().getString("Remote");
+        onVoidDamage = getConfig().getBoolean("OnVoidDamage");
     }
 
     private void loadSpawnLocation() {

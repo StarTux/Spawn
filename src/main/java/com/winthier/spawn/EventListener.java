@@ -84,7 +84,7 @@ public final class EventListener implements Listener {
         }
     }
 
-    @EventHandler
+    @EventHandler(ignoreCancelled = true, priority = EventPriority.HIGH)
     private void onEntityVoidDamage(EntityDamageEvent event) {
         if (!plugin.onVoidDamage) return;
         if (event.getCause() != EntityDamageEvent.DamageCause.VOID) return;

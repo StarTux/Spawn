@@ -89,6 +89,7 @@ public final class EventListener implements Listener {
         if (!plugin.onVoidDamage) return;
         if (event.getCause() != EntityDamageEvent.DamageCause.VOID) return;
         if (!(event.getEntity() instanceof Player player)) return;
+        plugin.getLogger().info("Teleporting " + player.getName() + " due to VoidDamage");
         player.teleport(plugin.getSpawnLocation(), TeleportCause.PLUGIN);
     }
 }

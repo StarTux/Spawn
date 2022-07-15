@@ -23,8 +23,9 @@ public final class EventListener implements Listener {
     private final SpawnPlugin plugin;
     private final Set<UUID> spawnLocatedPlayers = new HashSet<>();
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.LOW)
     public void onPlayerRespawn(PlayerRespawnEvent event) {
+        if (!plugin.onRespawn) return;
         for (var flag : event.getRespawnFlags()) {
             switch (flag) {
             case ANCHOR_SPAWN:

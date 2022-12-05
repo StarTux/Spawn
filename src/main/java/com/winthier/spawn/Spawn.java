@@ -11,11 +11,13 @@ public final class Spawn {
         return SpawnPlugin.instance.getSpawnLocation();
     }
 
-    public static void warp(Player player, TeleportCause cause) {
-        player.teleport(get(), cause);
+    public static boolean warp(Player player, TeleportCause cause) {
+        return player.teleport(get(), cause,
+                               true, // ignorePassengers
+                               true); // dismount
     }
 
-    public static void warp(Player player) {
-        warp(player, TeleportCause.PLUGIN);
+    public static boolean warp(Player player) {
+        return warp(player, TeleportCause.PLUGIN);
     }
 }

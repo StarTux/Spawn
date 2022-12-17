@@ -2,6 +2,6 @@ OnVoidDamage: false
 TeleportOnJoin: false
 OmitDefaultWorld: false
 InitialSpawn: true
-OnRespawn: true
+OnRespawn: false
 SpawnRadius: 0
 Remote: ''

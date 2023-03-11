@@ -9,7 +9,7 @@ author: StarTux
 website: https://github.com/StarTux/Spawn
 
 depend: [Core]
-softdepend: []
+softdepend: [Worlds]
 
 commands:
 

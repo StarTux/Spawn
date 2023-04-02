@@ -12,9 +12,9 @@ public final class Spawn {
     }
 
     public static boolean warp(Player player, TeleportCause cause) {
-        return player.teleport(get(), cause,
-                               true, // ignorePassengers
-                               true); // dismount
+        player.leaveVehicle();
+        player.eject();
+        return player.teleport(get(), cause);
     }
 
     public static boolean warp(Player player) {

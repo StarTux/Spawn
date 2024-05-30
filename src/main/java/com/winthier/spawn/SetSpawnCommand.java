@@ -3,12 +3,13 @@ package com.winthier.spawn;
 import java.util.Collections;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
-import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabExecutor;
 import org.bukkit.entity.Player;
+import static net.kyori.adventure.text.Component.text;
+import static net.kyori.adventure.text.format.NamedTextColor.YELLOW;
 
 @RequiredArgsConstructor
 public final class SetSpawnCommand implements TabExecutor {
@@ -23,10 +24,10 @@ public final class SetSpawnCommand implements TabExecutor {
         }
         final Location loc = player.getLocation();
         plugin.setSpawnLocation(loc);
-        player.sendMessage(ChatColor.YELLOW + "Spawn location set to "
-                           + loc.getBlockX() + " "
-                           + loc.getBlockY() + " "
-                           + loc.getBlockZ());
+        player.sendMessage(text("Spawn location set to "
+                                + loc.getBlockX() + " "
+                                + loc.getBlockY() + " "
+                                + loc.getBlockZ(), YELLOW));
         return true;
     }
 

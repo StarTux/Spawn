@@ -5,16 +5,17 @@ import com.cavetale.core.command.CommandWarn;
 import com.cavetale.core.command.RemotePlayer;
 import com.cavetale.core.command.RemotePlayerWrapper;
 import com.cavetale.core.connect.Connect;
-import com.cavetale.core.event.player.PluginPlayerEvent.Detail;
 import com.cavetale.core.event.player.PluginPlayerEvent;
+import com.cavetale.core.event.player.PluginPlayerEvent.Detail;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
+import static net.kyori.adventure.text.Component.text;
+import static net.kyori.adventure.text.format.NamedTextColor.YELLOW;
 import static net.kyori.adventure.title.Title.title;
 
 public final class SpawnCommand extends AbstractCommand<SpawnPlugin> {
@@ -72,7 +73,7 @@ public final class SpawnCommand extends AbstractCommand<SpawnPlugin> {
                 for (Player other : Bukkit.getOnlinePlayers()) {
                     if (!other.equals(sender)) {
                         other.teleport(plugin.getSpawnLocation(), TeleportCause.COMMAND);
-                        sender.sendMessage(ChatColor.YELLOW + "Teleported " + other.getName() + " to spawn.");
+                        sender.sendMessage(text("Teleported " + other.getName() + " to spawn", YELLOW));
                         count += 1;
                     }
                 }
@@ -83,7 +84,7 @@ public final class SpawnCommand extends AbstractCommand<SpawnPlugin> {
                 } else {
                     other.eject();
                     other.teleport(plugin.getSpawnLocation(), TeleportCause.COMMAND);
-                    sender.sendMessage(ChatColor.YELLOW + "Teleported " + other.getName() + " to spawn.");
+                    sender.sendMessage(text("Teleported " + other.getName() + " to spawn", YELLOW));
                     plugin.getLogger().info(sender.getName() + " teleported " + other.getName() + " to spawn.");
                 }
             }

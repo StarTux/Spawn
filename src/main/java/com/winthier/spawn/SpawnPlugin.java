@@ -27,6 +27,7 @@ public final class SpawnPlugin extends JavaPlugin {
         getCommand("setspawn").setExecutor(new SetSpawnCommand(this));
         getServer().getPluginManager().registerEvents(new EventListener(this), this);
         loadConfiguration();
+        new MenuListener(this).enable();
     }
 
     public void loadConfiguration() {

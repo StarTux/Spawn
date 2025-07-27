@@ -16,6 +16,7 @@ import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
+import org.bukkit.util.Vector;
 import org.spigotmc.event.player.PlayerSpawnLocationEvent;
 
 @RequiredArgsConstructor
@@ -92,5 +93,7 @@ public final class EventListener implements Listener {
         if (!(event.getEntity() instanceof Player player)) return;
         plugin.getLogger().info("Teleporting " + player.getName() + " due to VoidDamage");
         player.teleport(plugin.getSpawnLocation(), TeleportCause.PLUGIN);
+        player.setVelocity(new Vector());
+        player.setFallDistance(0f);
     }
 }

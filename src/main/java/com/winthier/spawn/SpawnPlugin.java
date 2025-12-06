@@ -18,6 +18,7 @@ public final class SpawnPlugin extends JavaPlugin {
     protected boolean onRespawn;
     protected Random random;
     protected String remote;
+    private boolean randomYaw;
 
     @Override
     public void onEnable() {
@@ -41,6 +42,7 @@ public final class SpawnPlugin extends JavaPlugin {
         remote = getConfig().getString("Remote");
         onVoidDamage = getConfig().getBoolean("OnVoidDamage");
         onRespawn = getConfig().getBoolean("OnRespawn");
+        randomYaw = getConfig().getBoolean("RandomYaw");
     }
 
     private void loadSpawnLocation() {
@@ -80,16 +82,21 @@ public final class SpawnPlugin extends JavaPlugin {
     }
 
     public Location getSpawnLocation() {
+        final Location result;
         if (spawnRadius > 0) {
             double radius = random.nextDouble() * (double) spawnRadius;
             double angle = random.nextDouble() * Math.PI * 2.0;
             double dx = Math.cos(angle) * radius;
             double dz = Math.sin(angle) * radius;
-            Location result = spawnLocation.clone().add(dx, 0, dz);
-            result.setYaw((float) random.nextDouble() * 360f);
+            result = spawnLocation.clone().add(dx, 0, dz);
             return result;
+        } else {
+            result = spawnLocation.clone();
         }
-        return spawnLocation.clone();
+        if (randomYaw) {
+            result.setYaw((float) random.nextDouble() * 360f);
+        }
+        return result;
     }
 
     public void setSpawnLocation(Location location) {

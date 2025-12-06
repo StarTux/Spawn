@@ -5,3 +5,4 @@ InitialSpawn: true
 OnRespawn: false
 SpawnRadius: 0
 Remote: ''
+RandomYaw: false
